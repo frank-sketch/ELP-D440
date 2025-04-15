@@ -734,9 +734,10 @@ void task(void)
 #endif
 		
 
-		#if 0
+		#if 1			// 25.04.15 rollback
 		Digit1_Value = CurrentmA;
 		#else
+		
 		// 240313 Test
 		if( CurrentmA <= 40 ){
 			Digit1_Value = 0;
@@ -788,7 +789,8 @@ void task(void)
 	
 	
 	//if( (temp_buf >= 125) || ( CurrentmA >= 6) ){
-	if( (temp_buf >= 42) || ( VolBuf >= 400 ) ){   // V OUT 제어 사양 24.05.09
+	//if( (temp_buf >= 42) || ( VolBuf >= 400 ) ){   // V OUT 제어 사양 24.05.09
+	if( (temp_buf >= 42) || ( CurrentmA >= 6 ) ){	// 25.4.15
 		// toggle 
 		//Warning_flag = 0;
 		//Warning_BlinkTimer = 0;
