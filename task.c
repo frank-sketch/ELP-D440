@@ -786,11 +786,15 @@ void task(void)
 	else{
 		Digit2_Value = temp_buf%1000;
 	}
+
+
 	
+	printf("\r\n temp_buf(%d) CurrentmA(%d) (%d)", temp_buf , CurrentmA);
+
 	
 	//if( (temp_buf >= 125) || ( CurrentmA >= 6) ){
 	//if( (temp_buf >= 42) || ( VolBuf >= 400 ) ){   // V OUT 제어 사양 24.05.09
-	if( (temp_buf >= 42) || ( CurrentmA >= 6 ) ){	// 25.4.15
+	if( (temp_buf >= 100) || ( Digit1_Value >= 6 ) ){	// 25.4.15
 		// toggle 
 		//Warning_flag = 0;
 		//Warning_BlinkTimer = 0;
