@@ -735,7 +735,16 @@ void task(void)
 		
 
 		#if 1			// 25.04.15 rollback
-		Digit1_Value = CurrentmA;
+		// Digit1_Value = CurrentmA;
+
+		if(CurrentmA < 14 ){
+			Digit1_Value = 0;
+		}
+		else{
+			Digit1_Value = CurrentmA - 14;
+		}
+		
+		
 		#else
 		
 		// 240313 Test
@@ -751,7 +760,7 @@ void task(void)
 		}
 		#endif
 
-		printf("\r\n CurrentmA(%d), VolBuf(%d) FND(%d)", CurrentmA, VolBuf, CurrentUpdateConter, Digit1_Value );
+		printf("\r\n CurrentmA(%d), VolBuf(%d) FND(%d)", CurrentmA, VolBuf, Digit1_Value );
 		
 		CurrentUpdateConter = 0;
 	}
