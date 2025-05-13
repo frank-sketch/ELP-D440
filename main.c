@@ -85,7 +85,7 @@ int main(void)
 	GPIO_Configure();
 	ADC_Configure();
 
-	printf("\r\n main Start..2024.2.22." );
+	printf("\r\n main Start..2025.5.12." );
 
 	PLATFORM_DelayMS( 100 );
 	

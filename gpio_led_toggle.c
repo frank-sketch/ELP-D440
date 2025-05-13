@@ -348,6 +348,87 @@ void Set_SegLED( uint8_t dat, uint8_t digit )
 
 #define SEG_FULL_ON   0
 
+
+#define DIGIT_ON_HIGH	0
+
+#define LED1_100	0
+#define LED1_10		1
+#define LED1_1		2
+
+
+#define LED2_100	3
+#define LED2_10		4
+#define LED2_1		5
+
+#define	DIGIT_OFF 	0
+#define	DIGIT_ON 	1
+
+void Digit_OnOff( uint8_t digit, uint8_t On )
+{
+
+	GPIO_TypeDef* gpio=0; 
+	u16 pin;
+
+	switch( digit ){
+
+		case LED1_100:
+		gpio = GPIOB;
+		pin = GPIO_Pin_4;
+		break;
+
+		case LED1_10:	
+		gpio = GPIOB;
+		pin = GPIO_Pin_3;
+		break;
+		
+		case LED1_1:	
+		gpio = GPIOA;
+		pin = GPIO_Pin_15;
+		break;
+		
+
+
+		case LED2_100:	
+		gpio = GPIOB;
+		pin = GPIO_Pin_7;
+		break;
+
+		
+		case LED2_10:
+		gpio = GPIOB;
+		pin = GPIO_Pin_6;
+		break;
+
+			
+		case LED2_1:	
+		gpio = GPIOB;
+		pin = GPIO_Pin_5;
+		break;
+		
+
+		
+	}
+
+	if( On == 1 ){
+
+		#if DIGIT_ON_HIGH
+		GPIO_SetBits(gpio, pin);
+		#else
+		GPIO_ResetBits(gpio, pin);
+		#endif
+		
+	}
+	else{
+		#if DIGIT_ON_HIGH
+		GPIO_ResetBits(gpio, pin);
+		#else
+		GPIO_SetBits(gpio, pin);
+		#endif
+	}
+
+}
+
+
 void SegLED_Proc(void)
 {
 	uint8_t buf1 = 0;
@@ -362,7 +443,7 @@ void SegLED_Proc(void)
 	LedDigit++;
 	if( LedDigit > 5 ) LedDigit = 0;
 
-	
+	#if 0
 	GPIO_ResetBits(GPIOA, GPIO_Pin_15);	// LED1-100 OFF
 	GPIO_ResetBits(GPIOB, GPIO_Pin_3);	// LED1-10 OFF
 	GPIO_ResetBits(GPIOB, GPIO_Pin_4);	// LED1-1 OFF
@@ -370,7 +451,17 @@ void SegLED_Proc(void)
 	GPIO_ResetBits(GPIOB, GPIO_Pin_5);	// LED2-100 OFF
 	GPIO_ResetBits(GPIOB, GPIO_Pin_6);	// LED2-10 OFF
 	GPIO_ResetBits(GPIOB, GPIO_Pin_7);	// LED2-1 OFF
+	#else
 
+	Digit_OnOff(LED1_100, 	DIGIT_OFF );
+	Digit_OnOff(LED1_10, 	DIGIT_OFF );
+	Digit_OnOff(LED1_1, 	DIGIT_OFF );
+
+	Digit_OnOff(LED2_100, 	DIGIT_OFF );
+	Digit_OnOff(LED2_10, 	DIGIT_OFF );
+	Digit_OnOff(LED2_1, 	DIGIT_OFF );
+	
+	#endif
 #if 0 
 	// Seg LOW is ON, Digit High is ON
 	GPIO_ResetBits(GPIOA, GPIO_Pin_8);		// 1G
@@ -401,7 +492,8 @@ void SegLED_Proc(void)
 			#if SEG_FULL_ON
 
 			Set_SegLED(8, DIGIT1);
-			GPIO_SetBits(GPIOA, GPIO_Pin_15);   
+			//GPIO_SetBits(GPIOA, GPIO_Pin_15);   
+			Digit_OnOff(LED1_1, 	DIGIT_ON );
 			break;
 			
 
@@ -409,13 +501,14 @@ void SegLED_Proc(void)
 
 			if( buf16_1 >= 0xFFFF ){
 				Set_SegLED('L', DIGIT1);
-				GPIO_SetBits(GPIOA, GPIO_Pin_15);     // LED1 -D1
+				//GPIO_SetBits(GPIOA, GPIO_Pin_15);     // LED1 -D1
 			}
 			else{
 				buf1 = (buf16_1 %10);
 				Set_SegLED(buf1, DIGIT1);
-				GPIO_SetBits(GPIOA, GPIO_Pin_15);     // LED1 -D1
+				//GPIO_SetBits(GPIOA, GPIO_Pin_15);     // LED1 -D1
 			}
+			Digit_OnOff(LED1_1, 	DIGIT_ON );
 			break;
 
 			
@@ -424,7 +517,8 @@ void SegLED_Proc(void)
 #if SEG_FULL_ON
 
 			Set_SegLED(8, DIGIT1);
-			GPIO_SetBits(GPIOB, GPIO_Pin_3); 
+			// GPIO_SetBits(GPIOB, GPIO_Pin_3); 
+			Digit_OnOff(LED1_10, 	DIGIT_ON );
 			break;
 			
 #endif
@@ -434,7 +528,7 @@ void SegLED_Proc(void)
 			
 			if( buf16_1 >= 0xFFFF ){
 				Set_SegLED('O', DIGIT1);
-				GPIO_SetBits(GPIOB, GPIO_Pin_3);
+				//GPIO_SetBits(GPIOB, GPIO_Pin_3);
 			}
 			else{
 				if( (buf16_1/10) == 0 ){
@@ -445,9 +539,9 @@ void SegLED_Proc(void)
 				}
 			
 				Set_SegLED(buf10, DIGIT1);
-				GPIO_SetBits(GPIOB, GPIO_Pin_3);
+				//GPIO_SetBits(GPIOB, GPIO_Pin_3);
 			}
-			
+			Digit_OnOff(LED1_10, 	DIGIT_ON );
 			break;
 
 			
@@ -457,7 +551,9 @@ void SegLED_Proc(void)
 #if SEG_FULL_ON
 			
 			Set_SegLED(8, DIGIT1);
-			GPIO_SetBits(GPIOB, GPIO_Pin_4);	
+			//GPIO_SetBits(GPIOB, GPIO_Pin_4);	
+
+			Digit_OnOff(LED1_100, 	DIGIT_ON );
 			break;
 						
 #endif
@@ -465,7 +561,7 @@ void SegLED_Proc(void)
 
 			if( buf16_1 >= 0xFFFF ){
 				Set_SegLED(0xFF, DIGIT1);
-				GPIO_SetBits(GPIOB, GPIO_Pin_4);
+				//GPIO_SetBits(GPIOB, GPIO_Pin_4);
 			}
 			else{
 			
@@ -477,10 +573,12 @@ void SegLED_Proc(void)
 				if( buf100 == 0 ) buf100 = 0xFF; // Blank
 				
 				Set_SegLED(buf100, DIGIT1);
-				GPIO_SetBits(GPIOB, GPIO_Pin_4);
+				//GPIO_SetBits(GPIOB, GPIO_Pin_4);
 
 
 			}
+
+			Digit_OnOff(LED1_100, 	DIGIT_ON );
 			break;
 			
 		case 3:						// 1
@@ -489,7 +587,9 @@ void SegLED_Proc(void)
 #if SEG_FULL_ON
 			
 			Set_SegLED(8, DIGIT2);
-			GPIO_SetBits(GPIOB, GPIO_Pin_5);
+			//GPIO_SetBits(GPIOB, GPIO_Pin_5);
+
+			Digit_OnOff(LED2_1, 	DIGIT_ON );
 			break;
 						
 #endif
@@ -501,7 +601,8 @@ void SegLED_Proc(void)
 			buf1 = (buf16_2 %10);
 			Set_SegLED(buf1, DIGIT2);
 			
-			GPIO_SetBits(GPIOB, GPIO_Pin_5);
+			//GPIO_SetBits(GPIOB, GPIO_Pin_5);
+			Digit_OnOff(LED2_1, 	DIGIT_ON );
 			break;
 			
 		case 4:						// 10
@@ -510,7 +611,8 @@ void SegLED_Proc(void)
 #if SEG_FULL_ON
 						
 			Set_SegLED(8, DIGIT2);
-			GPIO_SetBits(GPIOB, GPIO_Pin_6);
+			//GPIO_SetBits(GPIOB, GPIO_Pin_6);
+			Digit_OnOff(LED2_10, 	DIGIT_ON );
 			break;
 									
 #endif
@@ -521,7 +623,8 @@ void SegLED_Proc(void)
 			buf10 = (buf16_2 %100)/10;
 			Set_SegLED(buf10, DIGIT2);
 			
-			GPIO_SetBits(GPIOB, GPIO_Pin_6);
+			//GPIO_SetBits(GPIOB, GPIO_Pin_6);
+			Digit_OnOff(LED2_10, 	DIGIT_ON );
 			break;
 			
 		case 5:						// 100
@@ -530,7 +633,8 @@ void SegLED_Proc(void)
 #if SEG_FULL_ON
 						
 			Set_SegLED(8, DIGIT2);
-			GPIO_SetBits(GPIOB, GPIO_Pin_7);
+			//GPIO_SetBits(GPIOB, GPIO_Pin_7);
+			Digit_OnOff(LED2_100, 	DIGIT_ON );
 			break;
 									
 #endif
@@ -542,17 +646,17 @@ void SegLED_Proc(void)
 			if( buf16_2 & 0x8000 ){
 				buf100 = 0xFE;  // minus
 				Set_SegLED(buf100, DIGIT2);
-				GPIO_SetBits(GPIOB, GPIO_Pin_7);
+				//GPIO_SetBits(GPIOB, GPIO_Pin_7);
 			}
 			else{
 
 				buf100 = (Digit2_Value /100);
 				if( buf100 == 0 ) buf100 = 0xFF; // Blank
 				Set_SegLED(buf100, DIGIT2);
-				GPIO_SetBits(GPIOB, GPIO_Pin_7);
+				//GPIO_SetBits(GPIOB, GPIO_Pin_7);
 			}
 			
-
+			Digit_OnOff(LED2_100, 	DIGIT_ON );
 #else		
 			buf100 = (Digit2_Value /100);
 			Set_SegLED(buf100, DIGIT2);

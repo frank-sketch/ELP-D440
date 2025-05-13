@@ -293,6 +293,9 @@ uint8_t  PON_flag = 0;
 uint32_t SOUT_timer = 0;
 uint32_t SIN2_Changetimer = 0;
 
+
+uint32_t CurrentDisplayOnTimer = 3000;
+
 void tasktimer1msec(void)
 {
 
@@ -340,7 +343,7 @@ void tasktimer1msec(void)
 
 	if( SOUT_timer ) SOUT_timer--;
 	if( SIN2_Changetimer ) SIN2_Changetimer--;
-	
+	if( CurrentDisplayOnTimer ) CurrentDisplayOnTimer--;
 }
 
 
@@ -615,7 +618,7 @@ void task(void)
 	printf("\r\n CurrentmA(%d), Current_CalVol(%d)", CurrentmA, CalVol );
 	Digit1_Value = CurrentmA;
 #else
-	#define AVE_COUNTER	5
+	#define AVE_COUNTER	10
 	if( CurrentUpdateConter < AVE_COUNTER ){
 		CurrentBuf[CurrentUpdateConter] = CalVol;
 		CurrentUpdateConter++;
@@ -735,15 +738,26 @@ void task(void)
 		
 
 		#if 1			// 25.04.15 rollback
-		// Digit1_Value = CurrentmA;
 
+		#if 1	// 
+
+		if( CurrentDisplayOnTimer == 0 ){		
+			Digit1_Value = CurrentmA;
+		}
+		else{
+			Digit1_Value = 0;
+		}
+		
+		
+		#else
+		
 		if(CurrentmA < 14 ){
 			Digit1_Value = 0;
 		}
 		else{
 			Digit1_Value = CurrentmA - 14;
 		}
-		
+		#endif
 		
 		#else
 		
